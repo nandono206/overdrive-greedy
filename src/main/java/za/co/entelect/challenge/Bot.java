@@ -39,13 +39,13 @@ public class Bot {
         
         /** kalo lanenya sama dan mobil kita ada di depan, bisa buang oli **/
         if(IsInSameLane(myCar.position.lane, opponent.position.lane)){
-            if(IsInFront(myCar.position.lane, opponent.position.lane, myCar.position.block, opponent.position.block)){
-                if (hasPowerUp(PowerUps.OIL, myCar.powerups)) {
+            if(IsInFront(myCar.position.lane, opponent.position.lane, opponent.position.block, opponent.position.block)){
+                if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
                     return OIL;
                 }
             }
         }
-        
+       
         
         if(myCar.speed <= 3) {
             return ACCELERATE;
@@ -98,6 +98,13 @@ public class Bot {
         return status;
     }
     
-    
+    private boolean checkPowerUp(PowerUps check_power, PowerUps[] existing){
+        for(PowerUps power: existing){
+            if(power.equals(check_power)){
+                return true;
+            }
+        }
+        return false;
+    }
 
 }
