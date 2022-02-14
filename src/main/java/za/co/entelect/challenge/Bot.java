@@ -47,6 +47,18 @@ public class Bot {
         if (this.myCar.damage >= 5) {
             return FIX;
         }
+        
+        
+        /** kalo lanenya sama dan mobil kita ada di depan, bisa buang oli **/
+        if(IsInSameLane(myCar.position.lane, opponent.position.lane)){
+            if(IsInFront(myCar.position.lane, opponent.position.lane, opponent.position.block, opponent.position.block)){
+                if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
+                    return OIL;
+                }
+            }
+        }
+       
+        
         if(myCar.speed <= 3) {
             return ACCELERATE;
         }
@@ -81,6 +93,35 @@ public class Bot {
 
         }
         return blocks;
+    }
+    
+    /** ngecek apakah satu lane atau engga **/
+    
+    private boolean IsInSameLane(int lane, int lane2){
+        if(lane == lane2){
+            return true;
+        }
+        return false;
+    }
+
+    /** ngecek apakah posisi mobil ada di depan bot **/
+    private boolean IsInFront(int lane, int lane2, int block, int block2){
+        boolean status = false;
+        if(IsInSameLane(lane, lane2)){
+            if(block > block2){
+                status = true;
+            }
+        }
+        return status;
+    }
+    
+    private boolean checkPowerUp(PowerUps check_power, PowerUps[] existing){
+        for(PowerUps power: existing){
+            if(power.equals(check_power)){
+                return true;
+            }
+        }
+        return false;
     }
 
     private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
