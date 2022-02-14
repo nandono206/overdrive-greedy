@@ -124,15 +124,6 @@ public class Bot {
         return false;
     }
 
-    private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
-        for (PowerUps powerUp: available) {
-            if (powerUp.equals(powerUpToCheck)) {
-                return true;
-            }
-        }
-        return false;
-    }
-
     // Menghitung bobot lane dalam param speed block ke depan
     private int laneRisk(int lane, int block, int speed) {
         List<Lane[]> map = gameState.lanes;
