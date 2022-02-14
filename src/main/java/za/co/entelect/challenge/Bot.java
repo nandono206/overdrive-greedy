@@ -1,7 +1,9 @@
 package za.co.entelect.challenge;
 
+import jdk.internal.net.http.websocket.WebSocketImpl;
 import za.co.entelect.challenge.command.*;
 import za.co.entelect.challenge.entities.*;
+import za.co.entelect.challenge.enums.PowerUps;
 import za.co.entelect.challenge.enums.Terrain;
 
 import java.util.*;
@@ -17,8 +19,17 @@ public class Bot {
     private GameState gameState;
     private Car opponent;
     private Car myCar;
+
+
     private final static Command ACCELERATE = new AccelerateCommand();
+    private final static Command LIZARD = new LizardCommand();
+    private final static Command OIL = new OilCommand();
+    private final static Command BOOST = new BoostCommand();
+    private final static Command EMP = new EmpCommand();
     private final static Command FIX = new FixCommand();
+
+    private final static Command TURN_RIGHT = new ChangeLaneCommand(1);
+    private final static Command TURN_LEFT = new ChangeLaneCommand(-1);
 
     public Bot(Random random, GameState gameState) {
         this.random = random;
@@ -30,6 +41,7 @@ public class Bot {
         directionList.add(1);
     }
 
+    // Strategi Utama
     public Command run() {
         List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
         if (this.myCar.damage >= 5) {
@@ -38,6 +50,11 @@ public class Bot {
         if(myCar.speed <= 3) {
             return ACCELERATE;
         }
+
+        if (IsBoostAvailable()){
+            return BOOST;
+        }
+
         else if (blocks.contains(Terrain.MUD)) {
             int i = random.nextInt(directionList.size());
             return new ChangeLaneCommand(directionList.get(i));
@@ -64,6 +81,54 @@ public class Bot {
 
         }
         return blocks;
+    }
+
+    private Boolean hasPowerUp(PowerUps powerUpToCheck, PowerUps[] available) {
+        for (PowerUps powerUp: available) {
+            if (powerUp.equals(powerUpToCheck)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    // Menghitung bobot lane dalam param speed block ke depan
+    private int laneRisk(int lane, int block, int speed) {
+        List<Lane[]> map = gameState.lanes;
+        List<Object> blocks = new ArrayList<>();
+        int startBlock = map.get(0)[0].position.block;
+        int weight = 0;
+
+        Lane[] laneList = map.get(lane - 1);
+        for (int i = max(block - startBlock, 0); i <= block - startBlock + speed; i++) {
+            if (laneList[i] == null || laneList[i].terrain == Terrain.FINISH) {
+                break;
+            }
+            else if (laneList[i].terrain == Terrain.MUD || laneList[i].terrain == Terrain.OIL_SPILL){
+                weight += 1;
+            }
+            else if (laneList[i].terrain == Terrain.WALL){
+                weight += 3;
+            }
+            else if (laneList[i].terrain == Terrain.BOOST || laneList[i].terrain == Terrain.LIZARD){
+                weight -= 3;
+            }
+            else if (laneList[i].terrain == Terrain.EMP || laneList[i].terrain == Terrain.OIL_POWER || laneList[i].terrain == Terrain.TWEET){
+                weight -= 2;
+            }
+            blocks.add(laneList[i].terrain);
+
+        }
+        return weight;
+    }
+
+    // Periksa ketersediaan BOOST
+    public boolean IsBoostAvailable(){
+        boolean flag = false;
+        if ((this.myCar.damage == 0) && laneRisk(myCar.position.lane, myCar.position.block, 15) <=0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+            flag = true;
+        }
+        return flag;
     }
 
 }

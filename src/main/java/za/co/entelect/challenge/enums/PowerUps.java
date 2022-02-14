@@ -7,4 +7,10 @@ public enum PowerUps {
     BOOST,
     @SerializedName("OIL")
     OIL,
+    @SerializedName("TWEET")
+    TWEET,
+    @SerializedName("LIZARD")
+    LIZARD,
+    @SerializedName("EMP")
+    EMP;
 }
