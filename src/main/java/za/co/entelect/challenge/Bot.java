@@ -65,5 +65,24 @@ public class Bot {
         }
         return blocks;
     }
+    
+    /** ngecek apakah satu lane atau engga **/
+    
+    private boolean IsInSameLane(int lane, int lane2){
+        if(lane == lane2){
+            return true;
+        }
+        return false;
+    }
+
+    /** ngecek apakah posisi mobil ada di depan bot **/
+    private boolean IsInFront(int lane, int lane2, int block, int block2){
+        if(IsInSameLane(lane, lane2)){
+            if(block < block2){
+                return false;
+            }
+        }
+        return true;
+    }
 
 }
