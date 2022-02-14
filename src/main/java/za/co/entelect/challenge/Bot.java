@@ -35,6 +35,18 @@ public class Bot {
         if (this.myCar.damage >= 5) {
             return FIX;
         }
+        
+        
+        /** kalo lanenya sama dan mobil kita ada di depan, bisa buang oli **/
+        if(IsInSameLane(myCar.position.lane, opponent.position.lane)){
+            if(IsInFront(myCar.position.lane, opponent.position.lane, myCar.position.block, opponent.position.block)){
+                if (hasPowerUp(PowerUps.OIL, myCar.powerups)) {
+                    return OIL;
+                }
+            }
+        }
+        
+        
         if(myCar.speed <= 3) {
             return ACCELERATE;
         }
@@ -77,12 +89,15 @@ public class Bot {
 
     /** ngecek apakah posisi mobil ada di depan bot **/
     private boolean IsInFront(int lane, int lane2, int block, int block2){
+        boolean status = false;
         if(IsInSameLane(lane, lane2)){
-            if(block < block2){
-                return false;
+            if(block > block2){
+                status = true;
             }
         }
-        return true;
+        return status;
     }
+    
+    
 
 }
