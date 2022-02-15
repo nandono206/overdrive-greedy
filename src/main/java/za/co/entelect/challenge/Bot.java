@@ -48,7 +48,26 @@ public class Bot {
             return FIX;
         }
         
-        
+        /* --- Strategi Pakai Powerup (dari yang paling diprioritaskan) --- */
+
+        /* Kalo lane sama, mobil kita ada di belakang mobil lawan, dan punya EMP, maka pakai EMP*/
+        if(IsInSameLane(myCar.position.lane, opponent.position.lane)){
+            if(IsBehind(myCar.position.lane, opponent.position.lane, opponent.position.block, opponent.position.block)){
+                if (checkPowerUp(PowerUps.EMP, myCar.powerups)) {
+                    return EMP;
+                }
+            }
+        }
+
+        if (IsBoostAvailable()){
+            return BOOST;
+        }
+
+        /* Strategi Pakai Lizard */
+        if (isLizardAvailable()) {
+            return LIZARD;
+        }
+
         /** kalo lanenya sama dan mobil kita ada di depan, bisa buang oli **/
         if(IsInSameLane(myCar.position.lane, opponent.position.lane)){
             if(IsInFront(myCar.position.lane, opponent.position.lane, opponent.position.block, opponent.position.block)){
@@ -61,10 +80,6 @@ public class Bot {
         
         if(myCar.speed <= 3) {
             return ACCELERATE;
-        }
-
-        if (IsBoostAvailable()){
-            return BOOST;
         }
 
         else if (blocks.contains(Terrain.MUD)) {
@@ -109,6 +124,16 @@ public class Bot {
         boolean status = false;
         if(IsInSameLane(lane, lane2)){
             if(block > block2){
+                status = true;
+            }
+        }
+        return status;
+    }
+
+    private boolean IsBehind(int lane, int lane2, int block, int block2){
+        boolean status = false;
+        if(IsInSameLane(lane, lane2)){
+            if(block < block2){
                 status = true;
             }
         }
@@ -163,4 +188,37 @@ public class Bot {
         return flag;
     }
 
+    public boolean isLizardAvailable() {
+        boolean flag = false;
+        if (checkPowerUp(PowerUps.LIZARD, myCar.powerups)) {
+            if (myCar.position.lane = 1) { /* Kalau mobil kita di lane paling atas atau lane pertama */
+                if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) {
+                    if (laneRisk((myCar.position.lane)+1, myCar.position.block, myCar.speed) > 0) {
+                        flag = true;
+                    }
+                }
+            }
+            return flag;
+
+            else if (myCar.position.lane = 2 || myCar.position.lane = 3) { /* Kalau mobil kita di lane kedua atau ketiga */
+                if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) {
+                    if (laneRisk((myCar.position.lane)+1, myCar.position.block, myCar.speed) > 0) {
+                        if (laneRisk((myCar.position.lane)-1, myCar.position.block, myCar.speed) > 0) {
+                        flag = true;
+                    }
+                }
+            }
+            return flag;
+
+            else if (myCar.position.lane = 4) { /* Kalau mobil kita di lane terakhir atau lane keempat */
+                if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) {
+                    if (laneRisk((myCar.position.lane)-1, myCar.position.block, myCar.speed) > 0) {
+                        flag = true;
+                    }
+                }
+            }
+            return flag;
+            }
+        }
+    }    
 }
