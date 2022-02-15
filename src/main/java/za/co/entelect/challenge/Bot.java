@@ -83,7 +83,7 @@ public class Bot {
         }
         
         /** mengecek setiap bobot lane yang ada, dan menentukan apakah perlu pindah lane atau tidak **/
-        if(greedy_by_obstacle_res != myCar.position.lane){
+         if(greedy_by_obstacle_res != myCar.position.lane){
             if(myCar.position.lane == 1){
                 return new ChangeLaneCommand(directionList.get(1));
             }else if(myCar.position.lane == 2){
@@ -98,6 +98,8 @@ public class Bot {
                 }else{
                     return new ChangeLaneCommand(directionList.get(0));
                 }
+            }else{
+                return new ChangeLaneCommand(directionList.get(0));
             }
         }
 
