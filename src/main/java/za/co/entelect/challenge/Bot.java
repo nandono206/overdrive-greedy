@@ -50,23 +50,51 @@ public class Bot {
         
         /* --- Strategi Pakai Powerup (dari yang paling diprioritaskan) --- */
 
-        /* Kalo lane sama, mobil kita ada di belakang mobil lawan, dan punya EMP, maka pakai EMP*/
-        if(IsInSameLane(myCar.position.lane, opponent.position.lane)){
-            if(IsBehind(myCar.position.lane, opponent.position.lane, opponent.position.block, opponent.position.block)){
-                if (checkPowerUp(PowerUps.EMP, myCar.powerups)) {
-                    return EMP;
-                }
+        /* --- EMP --- */  /* Kalo lane sama, mobil kita ada di belakang mobil lawan, dan punya EMP, maka pakai EMP*/
+        if (isEMPAvailable()) {
+            return EMP;
+        }
+        
+
+        /* --- BOOST --- */
+        if (!(isEMPAvailable()) {
+            if (IsBoostAvailable()) {
+                return BOOST;
             }
         }
 
-        if (IsBoostAvailable()){
-            return BOOST;
+        /* --- LIZARD --- */
+        if (!(isEMPAvailable())) {
+            if (!(IsBoostAvailable())) {
+                if (isLizardAvailable()) {
+                    return LIZARD;
+                }
+            }
         }
+        
+        /* --- TWEET --- */
+        /* if (!(isEMPAvailable())) {
+            if (!(IsBoostAvailable())) {
+                if (!(isLizardAvailable())) {
+                    if (isTweetAvailable()) {
+                        return TWEET;
+                    }
+                }
+            }
+        } */
 
-        /* Strategi Pakai Lizard */
-        if (isLizardAvailable()) {
-            return LIZARD;
-        }
+        /* --- OIL --- */
+        /* if (!(isEMPAvailable())) {
+            if (!(IsBoostAvailable())) {
+                if (!(isLizardAvailable())) {
+                    if (!(isTweetAvailable())) {
+                        if (isOilAvailable()) {
+                            return OIL;
+                        }
+                    }
+                }
+            }
+        } */
 
         /** kalo lanenya sama dan mobil kita ada di depan, bisa buang oli **/
         if(IsInSameLane(myCar.position.lane, opponent.position.lane)){
@@ -179,15 +207,29 @@ public class Bot {
         return weight;
     }
 
+    // Periksa ketersediaan EMP
+    public boolean isEMPAvailable() {
+        boolean flag = false
+        if (checkPowerUp(PowerUps.EMP, myCar.powerups)){
+            if(IsBehind(myCar.position.lane, opponent.position.lane, myCar.position.block, opponent.position.block)){
+                if(IsInSameLane(myCar.position.lane, opponent.position.lane)) {
+                    return EMP;
+                }
+            }
+        }
+        return flag
+    }
+
     // Periksa ketersediaan BOOST
     public boolean IsBoostAvailable(){
         boolean flag = false;
-        if ((this.myCar.damage == 0) && laneRisk(myCar.position.lane, myCar.position.block, 15) <=0 && hasPowerUp(PowerUps.BOOST, myCar.powerups)){
+        if ((this.myCar.damage == 0) && laneRisk(myCar.position.lane, myCar.position.block, 15) <=0 && checkPowerUp(PowerUps.BOOST, myCar.powerups)){
             flag = true;
         }
         return flag;
     }
 
+    // Periksa ketersediaan LIZARD
     public boolean isLizardAvailable() {
         boolean flag = false;
         if (checkPowerUp(PowerUps.LIZARD, myCar.powerups)) {
@@ -220,5 +262,15 @@ public class Bot {
             return flag;
             }
         }
-    }    
+    }
+
+    /* public boolean isOilAvailable() {
+        if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
+            if(IsInFront(myCar.position.lane, opponent.position.lane, myCar.position.block, opponent.position.block)){
+                if(IsInSameLane(myCar.position.lane, opponent.position.lane)) {
+                    return OIL;
+                }
+            }
+        }
+    } */
 }
