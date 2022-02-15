@@ -291,10 +291,11 @@ public class Bot {
         if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
             if(IsInFront(myCar.position.lane, opponent.position.lane, myCar.position.block, opponent.position.block)){
                 if(IsInSameLane(myCar.position.lane, opponent.position.lane)) {
-                    return OIL;
+                    return true;
                 }
             }
         }
+        return false;
     } 
     
     private int GreedybyObstacle(int lane, int block, int speed){
