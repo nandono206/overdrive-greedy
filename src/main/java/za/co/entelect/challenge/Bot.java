@@ -288,9 +288,9 @@ public class Bot {
     }
 
     public boolean isOilAvailable() {
-        if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
-            if(IsInFront(myCar.position.lane, opponent.position.lane, myCar.position.block, opponent.position.block)){
-                if(IsInSameLane(myCar.position.lane, opponent.position.lane)) {
+        if(IsInSameLane(myCar.position.lane, opponent.position.lane)){
+            if(IsInFront(myCar.position.lane, opponent.position.lane, opponent.position.block, opponent.position.block)){
+                if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
                     return true;
                 }
             }
