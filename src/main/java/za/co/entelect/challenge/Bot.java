@@ -44,6 +44,8 @@ public class Bot {
     // Strategi Utama
     public Command run() {
         List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
+        int greedy_by_obstacle_res = GreedybyObstacle(myCar.position.lane, myCar.position.block, myCar.position.speed);
+            
         if (this.myCar.damage >= 5) {
             return FIX;
         }
@@ -108,6 +110,27 @@ public class Bot {
         
         if(myCar.speed <= 3) {
             return ACCELERATE;
+        }
+        
+        /** mengecek setiap bobot lane yang ada, dan menentukan apakah perlu pindah lane atau tidak **/
+         if(greedy_by_obstacle_res != myCar.position.lane){
+            if(myCar.position.lane == 1){
+                return new ChangeLaneCommand(directionList.get(1));
+            }else if(myCar.position.lane == 2){
+                if(greedy_by_obstacle_res == 3){
+                    return new ChangeLaneCommand(directionList.get(1));
+                }else{
+                    return new ChangeLaneCommand(directionList.get(0));
+                }
+            }else if(myCar.position.lane == 3){
+                if(greedy_by_obstacle_res == 4){
+                    return new ChangeLaneCommand(directionList.get(1));
+                }else{
+                    return new ChangeLaneCommand(directionList.get(0));
+                }
+            }else{
+                return new ChangeLaneCommand(directionList.get(0));
+            }
         }
 
         else if (blocks.contains(Terrain.MUD)) {
@@ -263,6 +286,7 @@ public class Bot {
             }
         }
     }
+<<<<<<< HEAD
 
     /* public boolean isOilAvailable() {
         if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
@@ -273,4 +297,37 @@ public class Bot {
             }
         }
     } */
+=======
+    
+    private int GreedybyObstacle(int lane, int block, int speed){
+        int number = 0;
+        int current_lane = laneRisk(lane, block, speed);
+        if(lane == 1){
+            int store_score = laneRisk(lane+1, block, speed);
+            if(current_lane <= store_score){
+                number = current_lane;
+            }else{
+                number = store_score;
+            }
+        }else if(lane == 4){
+            int store_score = laneRisk(lane-1, block, speed);
+            if(current_lane <= store_score){
+                number = current_lane;
+            }else{
+                number = store_score;
+            }
+        }else{
+            int store_score = laneRisk(lane-1, block, speed);
+            int store_score2 = laneRisk(lane + 1, block, speed);
+            if(current_lane <= store_score && current_lane <= store_score2){
+                number = current_lane;
+            }else if(store_score <= current_lane && store_score <= store_score2){
+                number = store_score;
+            }else if(store_score2 <= current_lane && store_score2 <= store_score){
+                number = store_score2;
+            }
+        }
+        return number;
+    }
+>>>>>>> cbf75158200f2be9e1607fe67c3ecca2e1fde9fb
 }
