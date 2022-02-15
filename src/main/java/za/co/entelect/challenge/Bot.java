@@ -81,6 +81,25 @@ public class Bot {
         if(myCar.speed <= 3) {
             return ACCELERATE;
         }
+        
+        /** mengecek setiap bobot lane yang ada, dan menentukan apakah perlu pindah lane atau tidak **/
+        if(greedy_by_obstacle_res != myCar.position.lane){
+            if(myCar.position.lane == 1){
+                return new ChangeLaneCommand(directionList.get(1));
+            }else if(myCar.position.lane == 2){
+                if(greedy_by_obstacle_res == 3){
+                    return new ChangeLaneCommand(directionList.get(1));
+                }else{
+                    return new ChangeLaneCommand(directionList.get(0));
+                }
+            }else if(myCar.position.lane == 3){
+                if(greedy_by_obstacle_res == 4){
+                    return new ChangeLaneCommand(directionList.get(1));
+                }else{
+                    return new ChangeLaneCommand(directionList.get(0));
+                }
+            }
+        }
 
         else if (blocks.contains(Terrain.MUD)) {
             int i = random.nextInt(directionList.size());
