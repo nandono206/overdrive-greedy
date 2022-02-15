@@ -44,6 +44,8 @@ public class Bot {
     // Strategi Utama
     public Command run() {
         List<Object> blocks = getBlocksInFront(myCar.position.lane, myCar.position.block);
+        int greedy_by_obstacle_res = GreedybyObstacle(myCar.position.lane, myCar.position.block, myCar.position.speed);
+            
         if (this.myCar.damage >= 5) {
             return FIX;
         }
