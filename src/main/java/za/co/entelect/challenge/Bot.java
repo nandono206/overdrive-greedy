@@ -286,9 +286,8 @@ public class Bot {
             }
         }
     }
-<<<<<<< HEAD
 
-    /* public boolean isOilAvailable() {
+    public boolean isOilAvailable() {
         if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
             if(IsInFront(myCar.position.lane, opponent.position.lane, myCar.position.block, opponent.position.block)){
                 if(IsInSameLane(myCar.position.lane, opponent.position.lane)) {
@@ -296,8 +295,7 @@ public class Bot {
                 }
             }
         }
-    } */
-=======
+    } 
     
     private int GreedybyObstacle(int lane, int block, int speed){
         int number = 0;
@@ -329,5 +327,4 @@ public class Bot {
         }
         return number;
     }
->>>>>>> cbf75158200f2be9e1607fe67c3ecca2e1fde9fb
 }
