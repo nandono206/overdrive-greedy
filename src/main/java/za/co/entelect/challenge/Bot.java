@@ -406,14 +406,14 @@ public class Bot {
         int current_lane = laneRisk(lane, block, speed);
         if(lane == 1){
             int store_score = laneRisk(lane+1, block, speed);
-            if(current_lane <= store_score){
+            if(current_lane >= store_score){
                 number = current_lane;
             }else{
                 number = store_score;
             }
         }else if(lane == 4){
             int store_score = laneRisk(lane-1, block, speed);
-            if(current_lane <= store_score){
+            if(current_lane >= store_score){
                 number = current_lane;
             }else{
                 number = store_score;
@@ -421,11 +421,11 @@ public class Bot {
         }else{
             int store_score = laneRisk(lane-1, block, speed);
             int store_score2 = laneRisk(lane + 1, block, speed);
-            if(current_lane <= store_score && current_lane <= store_score2){
+            if(current_lane >= store_score && current_lane >= store_score2){
                 number = current_lane;
-            }else if(store_score <= current_lane && store_score <= store_score2){
+            }else if(store_score >= current_lane && store_score >= store_score2){
                 number = store_score;
-            }else if(store_score2 <= current_lane && store_score2 <= store_score){
+            }else if(store_score2 >= current_lane && store_score2 >= store_score){
                 number = store_score2;
             }
         }
