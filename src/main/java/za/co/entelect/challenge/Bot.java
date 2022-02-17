@@ -115,17 +115,6 @@ public class Bot {
             }
         }
 
-        //IF BOOST AVAILABLE --> USE BOOST
-        if (IsBoostAvailable()){
-            return BOOST;
-        }
-        //IF LIZARD AVAILABLE --> USE LIZARD
-        if (isLizardAvailable()){
-            return LIZARD;
-        }
-
-
-
         /** mengecek setiap bobot lane yang ada, dan menentukan apakah perlu pindah lane atau tidak **/
         if(greedy_by_obstacle_res != myCar.position.lane){
             if(myCar.position.lane == 1){
@@ -147,7 +136,9 @@ public class Bot {
             }
         }
 
-
+        if ((myCar.speed < this.maxSpeed) &&  laneRisk(myCar.position.lane, myCar.position.block, SpeedAfterAccelerating(myCar)) <= 0){
+            return ACCELERATE;
+        }
         
         /* --- Strategi Pakai Powerup (dari yang paling diprioritaskan) --- */
 
@@ -156,18 +147,24 @@ public class Bot {
             return EMP;
         }
 
-        if ((myCar.speed < this.maxSpeed) &&  laneRisk(myCar.position.lane, myCar.position.block, SpeedAfterAccelerating(myCar)) <= 0){
-            return ACCELERATE;
+        //IF BOOST AVAILABLE --> USE BOOST
+        if (IsBoostAvailable()){
+            return BOOST;
         }
 
-    // IF TWEET > 0 USE TWEET
+        //IF LIZARD AVAILABLE --> USE LIZARD
+        if (isLizardAvailable()){
+            return LIZARD;
+        }
+
+        // IF TWEET > 0 USE TWEET
         if (isTweetAvailable()){
             int enemyLane = opponent.position.lane;
             int enemyPos = opponent.position.block + SpeedAfterAccelerating(opponent) + 1;
             //DEPLOY TWEET AT ENEMY LANE, ENEMY BLOCK + ENEMY SPEED AFTER ACCELERATION + 1
             return new TweetCommand(enemyLane, enemyPos);
         }
-// IF IN FRONT AND HAS OIL --> USE OIL
+        // IF IN FRONT AND HAS OIL --> USE OIL
         if (isOilAvailable()){
             return OIL;
         }
@@ -214,8 +211,8 @@ public class Bot {
 //            int i = random.nextInt(directionList.size());
 //            return new ChangeLaneCommand(directionList.get(i));
 //        }
-        return ACCELERATE;
-    }
+        //return ACCELERATE;
+    //}
 
 //    /**
 //     * Returns map of blocks and the objects in the for the current lanes, returns the amount of blocks that can be
