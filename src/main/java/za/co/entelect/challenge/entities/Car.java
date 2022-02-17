@@ -28,4 +28,7 @@ public class Car {
 
     @SerializedName("boostCounter")
     public int boostCounter;
+
+
+
 }
