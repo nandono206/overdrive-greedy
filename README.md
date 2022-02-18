@@ -18,13 +18,9 @@ Memanfaatkan strategi greedy untuk memenangkan permainan overdrive. Program dibu
 1. Update game-runner-config.json. Change "player-a" to "./starter-bots/java".
 2. Go back to starter-pack folder.
 3. Click run.bat
+4. Visualize using the [community visualizer](https://github.com/Affuta/overdrive-round-runner)
 
-## How To Visualize
-1. Download [Entellect Challenge 2019 Visualizer](https://github.com/dlweatherhead/entelect-challenge-2019-visualiser)
-2. Copy your latest match log that you want to visualize from **match-logs** folder to "Matches" folder inside the visualizer folder that you have downloaded.
-3. Click start-visualizer.
-4. Choose your match log in the visualizer.
-5. Have fun!
+
 
 Pada permainan Overdrive ini terdapat beberapa algoritma-algoritma greedy yang memaksimalkan kemungkinan kita untuk menang. Algoritma - algoritma ini memiliki kelebihan dan kekurangannya masing-masing tergantung pada jenis track dan musuh yang kita dapat. Di antara alternatif  algoritma-algoritma greedy yang sudah disampaikan pada sub bab 3.2, Algoritma Greedy by available command, greedy by damage, dan greedy by obstacle lah yang paling efektif dalam kondisi maksimumnya masing-masing. 
 Pada akhirnya algoritma greedy yang kami pakai merupakan gabungan dari ketiga algoritma greedy tersebut. Kami menamai algoritma greedy final kami dengan greedy by speed. Untuk permulaan kami melakukan greedy by fix untuk mengecek apakah mobil butuh diperbaiki. Selanjutnya apabila mobil tidak perlu diperbaiki maka akan menggunakan greedy by available command yang dicampur dengan greedy by obstacle untuk pertimbangan pindah lane-nya.
