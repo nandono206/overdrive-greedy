@@ -67,18 +67,18 @@ public class Bot {
         int greedy_by_obstacle_res = GreedybyObstacle(myCar.position.lane, myCar.position.block, myCar.speed);
 
         //FOR DEBUGGING PURPOSES
-        System.out.println(laneRisk(myCar.position.lane, myCar.position.block, myCar.speed));
-        if (myCar.position.lane == 1){
-            System.out.println("kanan: "+laneRisk(myCar.position.lane + 1, myCar.position.block, myCar.speed));
-        }
-        if (myCar.position.lane == 4){
-            System.out.println("kiri: " + laneRisk(myCar.position.lane -1 , myCar.position.block, myCar.speed));
-        }
-        if (myCar.position.lane == 2 || myCar.position.lane == 3){
-            System.out.println("kanan: "+laneRisk(myCar.position.lane + 1, myCar.position.block, myCar.speed));
-            System.out.println("kiri: " +laneRisk(myCar.position.lane -1 , myCar.position.block, myCar.speed));
-        }
-        System.out.println(greedy_by_obstacle_res);
+//        System.out.println(laneRisk(myCar.position.lane, myCar.position.block, myCar.speed));
+//        if (myCar.position.lane == 1){
+//            System.out.println("kanan: "+laneRisk(myCar.position.lane + 1, myCar.position.block, myCar.speed));
+//        }
+//        if (myCar.position.lane == 4){
+//            System.out.println("kiri: " + laneRisk(myCar.position.lane -1 , myCar.position.block, myCar.speed));
+//        }
+//        if (myCar.position.lane == 2 || myCar.position.lane == 3){
+//            System.out.println("kanan: "+laneRisk(myCar.position.lane + 1, myCar.position.block, myCar.speed));
+//            System.out.println("kiri: " +laneRisk(myCar.position.lane -1 , myCar.position.block, myCar.speed));
+//        }
+//        System.out.println(greedy_by_obstacle_res);
 
 
         //IF TOO MUCH DAMAGE FIX FIRST
@@ -115,6 +115,17 @@ public class Bot {
             }
         }
 
+        //IF BOOST AVAILABLE --> USE BOOST
+        if (IsBoostAvailable()){
+            return BOOST;
+        }
+        //IF LIZARD AVAILABLE --> USE LIZARD
+        if (isLizardAvailable()){
+            return LIZARD;
+        }
+
+
+
         /** mengecek setiap bobot lane yang ada, dan menentukan apakah perlu pindah lane atau tidak **/
         if(greedy_by_obstacle_res != myCar.position.lane){
             if(myCar.position.lane == 1){
@@ -136,10 +147,8 @@ public class Bot {
             }
         }
 
-        if ((myCar.speed < this.maxSpeed) &&  laneRisk(myCar.position.lane, myCar.position.block, SpeedAfterAccelerating(myCar)) <= 0){
-            return ACCELERATE;
-        }
-        
+
+
         /* --- Strategi Pakai Powerup (dari yang paling diprioritaskan) --- */
 
         /* --- EMP --- */  /* Kalo lane sama, mobil kita ada di belakang mobil lawan, dan punya EMP, maka pakai EMP*/
@@ -147,14 +156,8 @@ public class Bot {
             return EMP;
         }
 
-        //IF BOOST AVAILABLE --> USE BOOST
-        if (IsBoostAvailable()){
-            return BOOST;
-        }
-
-        //IF LIZARD AVAILABLE --> USE LIZARD
-        if (isLizardAvailable()){
-            return LIZARD;
+        if ((myCar.speed < this.maxSpeed) &&  laneRisk(myCar.position.lane, myCar.position.block, SpeedAfterAccelerating(myCar)) <= 0){
+            return ACCELERATE;
         }
 
         // IF TWEET > 0 USE TWEET
@@ -164,12 +167,12 @@ public class Bot {
             //DEPLOY TWEET AT ENEMY LANE, ENEMY BLOCK + ENEMY SPEED AFTER ACCELERATION + 1
             return new TweetCommand(enemyLane, enemyPos);
         }
-        // IF IN FRONT AND HAS OIL --> USE OIL
+// IF IN FRONT AND HAS OIL --> USE OIL
         if (isOilAvailable()){
             return OIL;
         }
 
-        
+
         /* --- TWEET --- */
         /* if (!(isEMPAvailable())) {
             if (!(IsBoostAvailable())) {
@@ -201,18 +204,18 @@ public class Bot {
 //                    return OIL;
 //                }
 //            }
-  //      }
-       
+        //      }
 
-        
+
+
 
 
 //        else if (blocks.contains(Terrain.MUD)) {
 //            int i = random.nextInt(directionList.size());
 //            return new ChangeLaneCommand(directionList.get(i));
 //        }
-        //return ACCELERATE;
-    //}
+        return ACCELERATE;
+    }
 
 //    /**
 //     * Returns map of blocks and the objects in the for the current lanes, returns the amount of blocks that can be
@@ -234,9 +237,9 @@ public class Bot {
 //        }
 //        return blocks;
 //    }
-    
+
     /** ngecek apakah satu lane atau engga **/
-    
+
     private boolean IsInSameLane(int lane, int lane2){
         if(lane == lane2){
             return true;
@@ -388,9 +391,15 @@ public class Bot {
         return number;
     }
 
-// Algoritma pemakaian powerup sesuai urutan prioritas 
+    // Periksa Ketersediaaan TWEET
+    public boolean isTweetAvailable(){
+        boolean flag = false;
+        if (countPowerUp(PowerUps.TWEET, myCar.powerups) > 0){
+            flag = true;
+        }
+        return flag;
+    }
 
-//EMP akan dipakai ketika mobil kita dibelakang mobil musuh dan satu lane
     // Periksa ketersediaan EMP
     public boolean isEMPAvailable() {
         boolean flag = false;
@@ -402,7 +411,6 @@ public class Bot {
         return flag;
     }
 
-//BOOST akan dipakai ketika damage mobil = 0 dan jumlah weight di lane sekarang <= 0 atau hasil (banyaknya powerup BOOST)*(100) >= jumlah blok ke garis finish
     // Periksa ketersediaan BOOST
     public boolean IsBoostAvailable(){
         boolean flag = false;
@@ -420,7 +428,7 @@ public class Bot {
         return flag;
     }
 
-//LIZARD akan dipakai ketika jumlah 'weight' dari lane yang memungkinkan adalah sama dengan 0
+    //kenapa dibedain sama ada +-1 nya
     // Periksa ketersediaan LIZARD
     public boolean isLizardAvailable() {
         boolean flag = false;
@@ -431,25 +439,25 @@ public class Bot {
             if (checkPowerUp(PowerUps.LIZARD, myCar.powerups)) {
 
                 if (myCar.position.lane == 1) { /* Kalau mobil kita di lane paling atas atau lane pertama */
-                    if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) { /* periksa jumlah weight di lane saat ini */
-                        if (laneRisk((myCar.position.lane)+1, myCar.position.block, myCar.speed) > 0) { /* periksa jumlah weight di lane kanan */
+                    if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) {
+                        if (laneRisk((myCar.position.lane)+1, myCar.position.block, myCar.speed) > 0) {
                             flag = true;
                         }
                     }
                 }
 
                 else if (myCar.position.lane == 2 || myCar.position.lane == 3) { /* Kalau mobil kita di lane kedua atau ketiga */
-                    if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) { /* periksa jumlah weight di lane saat ini */
-                        if (laneRisk((myCar.position.lane)+1, myCar.position.block, myCar.speed) > 0) { /* periksa jumlah weight di lane kanan */
-                            if (laneRisk((myCar.position.lane)-1, myCar.position.block, myCar.speed) > 0) { /* periksa jumlah weight di lane kiri */
+                    if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) {
+                        if (laneRisk((myCar.position.lane)+1, myCar.position.block, myCar.speed) > 0) {
+                            if (laneRisk((myCar.position.lane)-1, myCar.position.block, myCar.speed) > 0) {
                                 flag = true;
                             }
                         }
                     }
                 }
                 else if (myCar.position.lane == 4) { /* Kalau mobil kita di lane terakhir atau lane keempat */
-                    if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) {  /* periksa jumlah weight di lane saat ini */
-                        if (laneRisk((myCar.position.lane)-1, myCar.position.block, myCar.speed) > 0) {  /* periksa jumlah weight di lane kiri */
+                    if (laneRisk(myCar.position.lane, myCar.position.block, myCar.speed) > 0) {
+                        if (laneRisk((myCar.position.lane)-1, myCar.position.block, myCar.speed) > 0) {
                             flag = true;
                         }
                     }
@@ -461,18 +469,6 @@ public class Bot {
         return flag;
     }
 
-//TWEET akan diapaki tanpa syarat apapun
-    // Periksa Ketersediaaan TWEET
-    public boolean isTweetAvailable(){
-        boolean flag = false;
-        if (countPowerUp(PowerUps.TWEET, myCar.powerups) > 0){
-            flag = true;
-        }
-        return flag;
-    }
-
-//OIL akan dipakai jika mobil kita ada di depan dan satu lane dengan mobil lawan
-    // Periksa ketersediaan OIL
     public boolean isOilAvailable() {
         boolean flag = false;
         if (checkPowerUp(PowerUps.OIL, myCar.powerups)) {
@@ -484,4 +480,7 @@ public class Bot {
         }
         return flag;
     }
+
+
+
 }
